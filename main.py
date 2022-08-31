@@ -32,11 +32,12 @@ def open_xml_file(wsdtfile, TOOLKIT_PATH):
             file = elem.find("Filename").text
             if file.startswith('$WS_DIR$'):
                 if file.endswith('.c') or file.endswith('.s') or file.endswith('.h'):
-                    si4filelist.append(os.path.abspath(file.replace('$WS_DIR$', os.getcwd())) + '\r\n')
+                    si4filelist.append(os.path.abspath(file.replace('$WS_DIR$', os.getcwd())))
             elif TOOLKIT_PATH != '' and file.startswith('$TOOLKIT_DIR$'):
                 if file.endswith('.c') or file.endswith('.s') or file.endswith('.h'):
-                    si4filelist.append(file.replace('$TOOLKIT_DIR$', TOOLKIT_PATH) + '\r\n')
+                    si4filelist.append(file.replace('$TOOLKIT_DIR$', TOOLKIT_PATH))
         print(si4filelist)
+    return si4filelist
 
 
 if __name__ == '__main__':
@@ -46,4 +47,8 @@ if __name__ == '__main__':
     xml_file = search_file('.wsdt', "./settings/")
     # 找到匹配的文件
     if prj[:-4] == xml_file[:-5]:
-        open_xml_file("./settings/" + xml_file, IAR_Path)
+        filelist = open_xml_file("./settings/" + xml_file, IAR_Path)
+        with open(prj[:-4]+"_FileList.txt", "w") as file:
+            for i in filelist:
+                file.write(i+"\r")
+            file.close()
